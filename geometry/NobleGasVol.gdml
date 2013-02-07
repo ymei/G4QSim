@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<gdml xmlns:gdml="http://cern.ch/2001/Schemas/GDML"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="http://service-spi.web.cern.ch/service-spi/app/releases/GDML/schema/gdml.xsd">
+
+  <define>
+    <position name="R" unit="mm" x="0" y="0" z="0" />
+    <rotation name="V" unit="degree" x="0" y="0" z="0" />
+
+    <matrix name="prop1" coldim="2" values="1.0 7.0
+                                            2.0 9.4"/>
+
+    <matrix name="prop2" coldim="2" values="3.0 -1.0
+                                            4.0 -9.4
+                                            5.0 -11.1"/>
+    <!-- RINDEX of LXe -->
+    <matrix name="LXe_RINDEX" coldim="2" values="6.91*eV 1.63
+                                                 6.98*eV 1.61
+                                                 7.05*eV 1.58" />
+  </define>
+
+  <materials>
+    <element Z="7" formula="N" name="Nitrogen" >
+      <atom value="14.01" />
+    </element>
+    <element Z="8" formula="O" name="Oxygen" >
+      <atom value="16" />
+    </element>
+    <element Z="54" formula="Xe" name="Xenon">
+      <atom unit="g/mole" value="131.29"/>
+    </element>
+
+    <material formula="" name="Air" >
+      <property name="myproperty1" ref="prop1"/>
+      <property name="myproperty2" ref="prop2"/>
+      <D value="1.0012" />
+      <fraction n="0.7" ref="Nitrogen" />
+      <fraction n="0.3" ref="Oxygen" />
+    </material>
+
+    <material formula="" name="LXe" >
+      <property name="RINDEX" ref="LXe_RINDEX" />
+      <D unit="g/cm3" value="2.9172" />
+      <fraction n="1.0" ref="Xenon" />
+    </material>
+  </materials>
+
+  <solids>
+    <tube name = "SDCyl" rmin="0" rmax="500" z="1000" deltaphi="360"
+          startphi="0" aunit="deg" lunit= "mm" />
+    <box name="WorldBox" x="2000" y="2000" z="2000" lunit="mm" />
+  </solids>
+
+  <structure>
+    <volume name="SDVol" >
+      <materialref ref="LXe" />
+      <solidref ref="SDCyl" />
+      <auxiliary auxtype="SensDet" auxvalue="Tracker" />
+      <auxiliary auxtype="Color" auxvalue="Blue" />
+    </volume>
+    <volume name="World" >
+      <materialref ref="Air" />
+      <solidref ref="WorldBox" />
+      <physvol>
+        <volumeref ref="SDVol" />
+        <positionref ref="R"  />
+        <rotationref ref="V" />
+      </physvol>
+    </volume>
+  </structure>
+
+  <setup name="Default" version="1.0" >
+    <world ref="World" />
+  </setup>
+</gdml>

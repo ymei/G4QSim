@@ -1,0 +1,15 @@
+/control/verbose 2
+/run/verbose 2
+/tracking/verbose 2
+/tracking/storeTrajectory 1
+#
+/gps/particle ion
+/gps/ion 2 6 0
+/gps/position 0. 0. 0. cm
+/gps/energy 0
+/gps/verbose 2
+#
+/G4QSim/fullChain true
+/G4QSim/event/storeTrajectory true
+#
+#/run/beamOn 1
