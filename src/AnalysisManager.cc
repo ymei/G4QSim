@@ -208,6 +208,14 @@ AnalysisManager::EndOfEventStoreTrajectory(const G4Event *event)
             m_eventData->m_creatorProcess->push_back("");
             m_eventData->m_depositingProcess->push_back("");
 
+            // `ed' becomes the norm of the initial momentum
+            m_eventData->m_energyDeposited->push_back(trajectory->GetInitialMomentum().mag()/keV);
+            // `ek' becomes initial kinetic energy
+            m_eventData->m_kineticEnergy->push_back(trajectory->GetInitialKineticEnergy()/keV);
+            totalEnergyDeposited += trajectory->GetInitialKineticEnergy()/keV;
+            // time is used to record the index of new trajectory starting point in m_pX,Y,Z values
+            m_eventData->m_time->push_back((G4double)nbSteps);
+
             for(int i=0; i<nbPointEntries; i++) {
                 pointn = trajectory->GetPoint(i)->GetPosition();
 
@@ -217,12 +225,6 @@ AnalysisManager::EndOfEventStoreTrajectory(const G4Event *event)
 
                 nbSteps++;
             }
-            // `ed' becomes the norm of the initial momentum
-            m_eventData->m_energyDeposited->push_back(trajectory->GetInitialMomentum().mag()/keV);
-            // `ek' becomes initial kinetic energy
-            m_eventData->m_kineticEnergy->push_back(trajectory->GetInitialKineticEnergy()/keV);
-            totalEnergyDeposited += trajectory->GetInitialKineticEnergy()/keV;
-            m_eventData->m_time->push_back(0.0);
         }
     }
     m_eventData->m_nbSteps = nbSteps;
