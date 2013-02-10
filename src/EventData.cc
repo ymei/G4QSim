@@ -13,9 +13,9 @@ EventData::EventData()
     m_parentType = new vector<string>;
     m_creatorProcess = new vector<string>;
     m_depositingProcess = new vector<string>;
-    m_pX = new vector<double>;
-    m_pY = new vector<double>;
-    m_pZ = new vector<double>;
+    m_xp = new vector<double>;
+    m_yp = new vector<double>;
+    m_zp = new vector<double>;
     m_energyDeposited = new vector<double>;
     m_kineticEnergy = new vector<double>;
     m_time = new vector<double>;
@@ -38,9 +38,9 @@ EventData::~EventData()
     delete m_parentType;
     delete m_creatorProcess;
     delete m_depositingProcess;
-    delete m_pX;
-    delete m_pY;
-    delete m_pZ;
+    delete m_xp;
+    delete m_yp;
+    delete m_zp;
     delete m_energyDeposited;
     delete m_kineticEnergy;
     delete m_time;
@@ -61,9 +61,9 @@ EventData::Clear()
     m_parentType->clear();
     m_creatorProcess->clear();
     m_depositingProcess->clear();
-    m_pX->clear();
-    m_pY->clear();
-    m_pZ->clear();
+    m_xp->clear();
+    m_yp->clear();
+    m_zp->clear();
     m_energyDeposited->clear();
     m_kineticEnergy->clear();
     m_time->clear();

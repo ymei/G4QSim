@@ -31,9 +31,9 @@ public:
     vector<string> *m_parentType;
     vector<string> *m_creatorProcess;
     vector<string> *m_depositingProcess;
-    vector<double> *m_pX;               // position x,y,z
-    vector<double> *m_pY;
-    vector<double> *m_pZ;
+    vector<double> *m_xp;               // position x,y,z
+    vector<double> *m_yp;
+    vector<double> *m_zp;
     vector<double> *m_energyDeposited;
     vector<double> *m_kineticEnergy;
     vector<double> *m_time;

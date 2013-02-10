@@ -51,9 +51,9 @@ AnalysisManager::BeginOfRun(const G4Run *run)
     m_ttree->Branch("parenttype", "vector<string>", &m_eventData->m_parentType);
     m_ttree->Branch("creatproc", "vector<string>", &m_eventData->m_creatorProcess);
     m_ttree->Branch("edproc", "vector<string>", &m_eventData->m_depositingProcess);
-    m_ttree->Branch("xp", "vector<double>", &m_eventData->m_pX);
-    m_ttree->Branch("yp", "vector<double>", &m_eventData->m_pY);
-    m_ttree->Branch("zp", "vector<double>", &m_eventData->m_pZ);
+    m_ttree->Branch("xp", "vector<double>", &m_eventData->m_xp);
+    m_ttree->Branch("yp", "vector<double>", &m_eventData->m_yp);
+    m_ttree->Branch("zp", "vector<double>", &m_eventData->m_zp);
     m_ttree->Branch("ed", "vector<double>", &m_eventData->m_energyDeposited);
     m_ttree->Branch("ek", "vector<double>", &m_eventData->m_kineticEnergy);
     m_ttree->Branch("time", "vector<double>", &m_eventData->m_time);
@@ -142,9 +142,9 @@ AnalysisManager::EndOfEvent(const G4Event *event)
                 m_eventData->m_creatorProcess->push_back(hit->GetCreatorProcess());
                 m_eventData->m_depositingProcess->push_back(hit->GetDepositingProcess());
 
-                m_eventData->m_pX->push_back(hit->GetPosition().x()/mm);
-                m_eventData->m_pY->push_back(hit->GetPosition().y()/mm);
-                m_eventData->m_pZ->push_back(hit->GetPosition().z()/mm);
+                m_eventData->m_xp->push_back(hit->GetPosition().x()/mm);
+                m_eventData->m_yp->push_back(hit->GetPosition().y()/mm);
+                m_eventData->m_zp->push_back(hit->GetPosition().z()/mm);
 
                 totalEnergyDeposited += hit->GetEnergyDeposited()/keV;
                 m_eventData->m_energyDeposited->push_back(hit->GetEnergyDeposited()/keV);
@@ -213,15 +213,15 @@ AnalysisManager::EndOfEventStoreTrajectory(const G4Event *event)
             // `ek' becomes initial kinetic energy
             m_eventData->m_kineticEnergy->push_back(trajectory->GetInitialKineticEnergy()/keV);
             totalEnergyDeposited += trajectory->GetInitialKineticEnergy()/keV;
-            // time is used to record the index of new trajectory starting point in m_pX,Y,Z values
+            // `time' is used to record the index of new trajectory starting point in m_xp,yp,zp values
             m_eventData->m_time->push_back((G4double)nbSteps);
 
             for(int i=0; i<nbPointEntries; i++) {
                 pointn = trajectory->GetPoint(i)->GetPosition();
 
-                m_eventData->m_pX->push_back(pointn.x()/mm);
-                m_eventData->m_pY->push_back(pointn.y()/mm);
-                m_eventData->m_pZ->push_back(pointn.z()/mm);
+                m_eventData->m_xp->push_back(pointn.x()/mm);
+                m_eventData->m_yp->push_back(pointn.y()/mm);
+                m_eventData->m_zp->push_back(pointn.z()/mm);
 
                 nbSteps++;
             }
