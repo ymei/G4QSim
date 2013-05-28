@@ -13,6 +13,9 @@
 # (if you prefer not refreshing each event, uncomment next line)
 #/vis/scene/endOfEventAction accumulate
 
+# set all cuts: gamma, e- and e+
+/G4QSim/phys/setCuts 0.001 mm
+
 /gps/verbose 0
 /gps/particle gamma
 /gps/energy 511 keV

@@ -4,6 +4,9 @@
 #include "globals.hh"
 #include "G4VUserPhysicsList.hh"
 
+class PhysicsListMessenger;
+class G4VPhysicsConstructor;
+
 class G4Cerenkov;
 class G4Scintillation;
 class G4OpAbsorption;
@@ -39,6 +42,10 @@ public:
     //for the Messenger 
     void SetVerbose(G4int);
     void SetNbOfPhotonsCerenkov(G4int);
+    void AddPhysicsList(const G4String &name);
+    void SetCutForGamma(G4double);
+    void SetCutForElectron(G4double);
+    void SetCutForPositron(G4double);
 
 private:
     G4Cerenkov*          m_theCerenkovProcess;
@@ -47,6 +54,16 @@ private:
     G4OpRayleigh*        m_theRayleighScatteringProcess;
     G4OpMieHG*           m_theMieHGScatteringProcess;
     G4OpBoundaryProcess* m_theBoundaryProcess;
+
+    G4double m_cutForGamma;
+    G4double m_cutForElectron;
+    G4double m_cutForPositron;
+    G4double m_currentDefaultCut;
+
+    G4VPhysicsConstructor *m_emPhysicsList;
+    G4String m_emName;
+
+    PhysicsListMessenger* m_physicsListMessenger;
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

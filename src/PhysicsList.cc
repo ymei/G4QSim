@@ -2,6 +2,7 @@
 #include "G4VModularPhysicsList.hh"
 
 #include "PhysicsList.hh"
+#include "PhysicsListMessenger.hh"
 
 #include "G4UnitsTable.hh"
 
@@ -10,7 +11,6 @@
 #include "G4ParticleTable.hh"
 
 #include "G4ProcessManager.hh"
-
 #include "G4Cerenkov.hh"
 #include "G4Scintillation.hh"
 #include "G4OpAbsorption.hh"
@@ -20,6 +20,8 @@
 
 #include "G4LossTableManager.hh"
 #include "G4EmSaturation.hh"
+#include "G4EmPenelopePhysics.hh"
+#include "G4EmLivermorePhysics.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -44,6 +46,15 @@ PhysicsList::PhysicsList()
     m_theMieHGScatteringProcess    = NULL;
     m_theBoundaryProcess           = NULL;
 
+    m_currentDefaultCut = 1.0*mm;
+    m_cutForGamma = m_currentDefaultCut;
+    m_cutForElectron = m_currentDefaultCut;
+    m_cutForPositron = m_currentDefaultCut;
+
+    m_physicsListMessenger = new PhysicsListMessenger(this);
+    m_emName = G4String("EmPenelope");
+    m_emPhysicsList = new G4EmPenelopePhysics();
+    
     SetVerboseLevel(0);
 }
 
@@ -126,16 +137,13 @@ void PhysicsList::ConstructHadrons()
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-#include "G4EmPenelopePhysics.hh"
-
 void PhysicsList::ConstructProcess()
 {
     AddTransportation();
 
     ConstructGeneral();
     // ConstructEM();
-    G4VPhysicsConstructor *emPhysicsList = new G4EmPenelopePhysics();
-    emPhysicsList->ConstructProcess();
+    m_emPhysicsList->ConstructProcess();
     ConstructOp();
     // Optical Physics
     /*
@@ -145,6 +153,26 @@ void PhysicsList::ConstructProcess()
     opticalPhysics->SetMaxBetaChangePerStep(10.0);
     opticalPhysics->SetTrackSecondariesFirst(true);
     */
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void PhysicsList::AddPhysicsList(const G4String &name)
+{
+    if (verboseLevel>0) {
+        G4cout << "PhysicsList::AddPhysicsList: <" << name << ">" << G4endl;
+    }
+
+    if (name == m_emName) {
+        return;
+    } else if (name == "EmLivermore") {
+        m_emName = name;
+        delete m_emPhysicsList;
+        m_emPhysicsList = new G4EmLivermorePhysics();
+    } else {
+        G4cout << "PhysicsList::AddPhysicsList: <" << name << ">"
+               << " is not defined" << G4endl;
+    }
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -414,11 +442,35 @@ void PhysicsList::SetCuts()
 
     // set cut values for gamma at first and for e- second and next for e+,
     // because some processes for e+/e- need cut values for gamma
-    SetCutValue(0.1*mm, "gamma");
-    SetCutValue(0.1*mm, "e-");
-    SetCutValue(1.0*mm, "e+");
+    SetCutValue(m_cutForGamma, "gamma");
+    SetCutValue(m_cutForElectron, "e-");
+    SetCutValue(m_cutForPositron, "e+");
 
     DumpCutValuesTable();
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void PhysicsList::SetCutForGamma(G4double cut)
+{
+    m_cutForGamma = cut;
+    SetParticleCuts(m_cutForGamma, G4Gamma::Gamma());
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void PhysicsList::SetCutForElectron(G4double cut)
+{
+    m_cutForElectron = cut;
+    SetParticleCuts(m_cutForElectron, G4Electron::Electron());
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void PhysicsList::SetCutForPositron(G4double cut)
+{
+    m_cutForPositron = cut;
+    SetParticleCuts(m_cutForPositron, G4Positron::Positron());
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
