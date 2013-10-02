@@ -78,13 +78,13 @@ void SDHit::Print()
            << " parentId: " << m_parentId
            << " particle: " << *m_particleType
            << " parentType: " << *m_parentType << G4endl
-           << "CreatorProcess: " << *m_creatorProcess
+           << " CreatorProcess: " << *m_creatorProcess
            << " DepositingProcess: " << *m_depositingProcess << G4endl
-           << "Position: " << m_position.x()/mm
+           << " Position: " << m_position.x()/mm
            << " " << m_position.y()/mm
            << " " << m_position.z()/mm
            << " mm" << G4endl
-           << "EnergyDeposited: " << m_energyDeposited/keV << " keV"
+           << " EnergyDeposited: " << m_energyDeposited/keV << " keV"
            << " KineticEnergyLeft: " << m_kineticEnergy/keV << " keV"
            << " Time: " << m_time/s << " s" << G4endl;
 /*    

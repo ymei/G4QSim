@@ -24,12 +24,6 @@ G4VPhysicalVolume * DetectorConstruction::Construct()
     G4String trackerChamberSDname = "Tracker";
     SensitiveDetector* aTrackerSD = new SensitiveDetector(trackerChamberSDname);
     sdManager->AddNewDetector(aTrackerSD);
-    trackerChamberSDname = "Tracker1";
-    aTrackerSD = new SensitiveDetector(trackerChamberSDname);
-    sdManager->AddNewDetector(aTrackerSD);
-    trackerChamberSDname = "Tracker2";
-    aTrackerSD = new SensitiveDetector(trackerChamberSDname);
-    sdManager->AddNewDetector(aTrackerSD);
 
     ///////////////////////////////////////////////////////////////////////
     //
