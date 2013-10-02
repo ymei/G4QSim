@@ -24,6 +24,7 @@ public:
     void SetGunType(G4String gunType) { m_gunType = gunType; }
     void SetQValue(G4double QValue) { m_QValue = QValue; }
     int LoadEHist(G4String EHistFName);
+    void SetFIonPDir(G4ThreeVector fIonPDir) { m_fIonPDir = fIonPDir; }
     void SetFIonPos(G4ThreeVector fIonPos) { m_fIonPos = fIonPos; }
     void SetFIonEk(G4double fIonEk) { m_fIonEk = fIonEk; }
     void SetFIon(G4ParticleDefinition *ionDef, G4double ionCharge)

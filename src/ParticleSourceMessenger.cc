@@ -53,6 +53,10 @@ ParticleSourceMessenger::ParticleSourceMessenger(ParticleSource *particleSource)
     m_EHistCmd->SetDefaultValue("EHist.dat");
 
     // father ion
+    m_fIonPDirCmd = new G4UIcmdWith3Vector("/G4QSim/gun/fIonPDir", this);
+    m_fIonPDirCmd->SetGuidance("Set momentum direction of father ion.");
+    m_fIonPDirCmd->SetParameterName("PX", "PY", "PZ", true, true);
+
     m_fIonPosCmd = new G4UIcmdWith3VectorAndUnit("/G4QSim/gun/fIonPos", this);
     m_fIonPosCmd->SetGuidance("Set starting position of father ion.");
     m_fIonPosCmd->SetParameterName("X", "Y", "Z", true, true);
@@ -122,6 +126,7 @@ ParticleSourceMessenger::~ParticleSourceMessenger()
     delete m_typeCmd;
     delete m_QValueCmd;
     delete m_EHistCmd;
+    delete m_fIonPDirCmd;
     delete m_fIonPosCmd;
     delete m_fIonEkCmd;
     delete m_fIonCmd;
@@ -143,6 +148,8 @@ void ParticleSourceMessenger::SetNewValue(G4UIcommand *command, G4String newValu
         m_particleSource->SetQValue(m_QValueCmd->GetNewDoubleValue(newValues));
     else if(command == m_EHistCmd)
         m_particleSource->LoadEHist(newValues);
+    else if(command == m_fIonPDirCmd)
+        m_particleSource->SetFIonPDir(m_fIonPDirCmd->GetNew3VectorValue(newValues));
     else if(command == m_fIonPosCmd)
         m_particleSource->SetFIonPos(m_fIonPosCmd->GetNew3VectorValue(newValues));
     else if(command == m_fIonEkCmd)

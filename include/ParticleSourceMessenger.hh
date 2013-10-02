@@ -44,6 +44,7 @@ private:
     G4UIcmdWithAString *m_typeCmd;
     G4UIcmdWithADoubleAndUnit *m_QValueCmd;
     G4UIcmdWithAString *m_EHistCmd;
+    G4UIcmdWith3Vector *m_fIonPDirCmd;
     G4UIcmdWith3VectorAndUnit *m_fIonPosCmd;
     G4UIcmdWithADoubleAndUnit *m_fIonEkCmd;
     G4UIcommand *m_fIonCmd, *m_dIonCmd;
