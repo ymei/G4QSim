@@ -69,7 +69,7 @@ AnalysisManager::BeginOfRun(const G4Run *run)
     m_ttree->Branch("yp_pri", &m_eventData->m_primaryY, "yp_pri/D");
     m_ttree->Branch("zp_pri", &m_eventData->m_primaryZ, "zp_pri/D");
 
-    m_ttree->SetMaxTreeSize(10e9);
+    m_ttree->SetMaxTreeSize(1e12);
     // m_ttree->SetAutoSave(50000000);
     m_ttree->AutoSave();
 
