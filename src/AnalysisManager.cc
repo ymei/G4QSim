@@ -70,6 +70,7 @@ AnalysisManager::BeginOfRun(const G4Run *run)
     m_ttree->Branch("zp_pri", &m_eventData->m_primaryZ, "zp_pri/D");
 
     m_ttree->SetMaxTreeSize(10e9);
+    // m_ttree->SetAutoSave(50000000);
     m_ttree->AutoSave();
 
     m_nbEventsToSimulateParameter = new TParameter<int>("nbevents", m_nbEventsToSimulate);
@@ -159,7 +160,7 @@ AnalysisManager::EndOfEvent(const G4Event *event)
 
     }
     m_ttree->Fill();
-    if(event->GetEventID() % 100 == 0)
+    if(event->GetEventID() % m_saveInterval == 0)
         m_ttree->AutoSave("SaveSelf");
 
     m_eventData->Clear();
@@ -231,7 +232,7 @@ AnalysisManager::EndOfEventStoreTrajectory(const G4Event *event)
     m_eventData->m_totalEnergyDeposited = totalEnergyDeposited;
 
     m_ttree->Fill();
-    if(event->GetEventID() % 100 == 0)
+    if(event->GetEventID() % m_saveInterval == 0)
         m_ttree->AutoSave("SaveSelf");
     m_eventData->Clear();
 }

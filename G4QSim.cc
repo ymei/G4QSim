@@ -43,6 +43,7 @@ void print_usage(void)
     G4cerr << "       -n [#] of events to simulate"                << G4endl;
     G4cerr << "       -o [output (data) file name]"                << G4endl;
     G4cerr << "       -s [random number seed]"                     << G4endl;
+    G4cerr << "       -u [particleSource, 0:gps, 1:beta-neutrino]" << G4endl;
     G4cerr << "       -v [vrml | opengl], visual engine selection" << G4endl;
     exit(EXIT_FAILURE);
 }
@@ -61,12 +62,13 @@ main(int argc, char **argv)
     G4bool vrmlVisualizeQ = false;
     G4bool openGLVisualizeQ = false;
     G4int nbEventsToSimulate = 0;
+    G4int particleSourceType = 0;
 
     G4GDMLParser gdmlParser;
     G4long randSeed = time(NULL);
 
     // parse switches
-    while((optC = getopt(argc, argv, "g:i:m:n:o:s:v:")) != -1)
+    while((optC = getopt(argc, argv, "g:i:m:n:o:s:u:v:")) != -1)
     {
         switch(optC)
         {
@@ -98,6 +100,11 @@ main(int argc, char **argv)
             optStrStream.clear();
             optStrStream >> randSeed;
             break;
+
+        case 'u':
+            optStrStream.str(optarg);
+            optStrStream.clear();
+            optStrStream >> particleSourceType;
 
         case 'v':
             visualizeQ = true;
@@ -142,7 +149,7 @@ main(int argc, char **argv)
     */
 
     // create the primary generator action
-    PrimaryGeneratorAction *primaryGeneratorAction = new PrimaryGeneratorAction();
+    PrimaryGeneratorAction *primaryGeneratorAction = new PrimaryGeneratorAction(particleSourceType);
     // create an analysis manager object
     AnalysisManager *analysisManager = new AnalysisManager(primaryGeneratorAction);
     // set user-defined action classes

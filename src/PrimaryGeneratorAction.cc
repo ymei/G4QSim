@@ -7,28 +7,32 @@
 #include "G4Geantino.hh"
 #include "Randomize.hh"
 
+#include "ParticleSource.hh"
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-PrimaryGeneratorAction::PrimaryGeneratorAction()
+PrimaryGeneratorAction::PrimaryGeneratorAction(G4int particleSourceType)
 {
+    m_particleSourceType = particleSourceType;
     m_particleTypeOfPrimary = "";
     m_positionOfPrimary = G4ThreeVector(0., 0., 0.);
     m_momentumDirectionOfPrimary = G4ThreeVector(0., 0., 0.);
     m_energyOfPrimary = 0.;
 
-    // G4int nParticle = 1;
-    // m_particleGun  = new G4ParticleGun(nParticle);
-    m_particleGun  = new G4GeneralParticleSource();
+    // `gps' that comes with Geant4
+    m_gpsGun = new G4GeneralParticleSource();
+    // custom defined
+    m_particleGun = new ParticleSource();
 
-    //m_particleGun->SetParticleEnergy(3.0*eV);
-    m_particleGun->SetParticlePosition(m_positionOfPrimary);
-    //m_particleGun->SetParticleMomentumDirection(G4ThreeVector(1.0, 0.0, 0.0));
+    // just an example, usually set in macro
+    m_gpsGun->SetParticlePosition(m_positionOfPrimary);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 PrimaryGeneratorAction::~PrimaryGeneratorAction()
 {
+    delete m_gpsGun;
     delete m_particleGun;
 }
 
@@ -36,24 +40,30 @@ PrimaryGeneratorAction::~PrimaryGeneratorAction()
 
 void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 {
-    if (m_particleGun->GetParticleDefinition() == G4Geantino::Geantino()) {
+    if (m_gpsGun->GetParticleDefinition() == G4Geantino::Geantino()) {
         G4int Z = 10, A = 24;
         G4double ionCharge   = 0.*eplus;
         G4double excitEnergy = 0.*keV;
     
         G4ParticleDefinition* ion
             = G4ParticleTable::GetParticleTable()->GetIon(Z,A,excitEnergy);
-        m_particleGun->SetParticleDefinition(ion);
-        m_particleGun->SetParticleCharge(ionCharge);
+        m_gpsGun->SetParticleDefinition(ion);
+        m_gpsGun->SetParticleCharge(ionCharge);
     }  
-  
-    //create vertex
-    //   
-    m_particleGun->GeneratePrimaryVertex(anEvent);
 
-    m_particleTypeOfPrimary = m_particleGun->GetParticleDefinition()->GetParticleName();
-    m_positionOfPrimary = m_particleGun->GetParticlePosition();
-    m_momentumDirectionOfPrimary = m_particleGun->GetParticleMomentumDirection();
-    m_energyOfPrimary = m_particleGun->GetParticleEnergy();
+    //create vertex
+    if(m_particleSourceType) {
+        m_particleGun->GeneratePrimaryVertex(anEvent);
+        m_particleTypeOfPrimary      = m_particleGun->GetParticleDefinition()->GetParticleName();
+        m_positionOfPrimary          = m_particleGun->GetParticlePosition();
+        m_momentumDirectionOfPrimary = m_particleGun->GetParticleMomentumDirection();
+        m_energyOfPrimary            = m_particleGun->GetParticleEnergy();
+    } else {
+        m_gpsGun->GeneratePrimaryVertex(anEvent);
+        m_particleTypeOfPrimary      = m_gpsGun->GetParticleDefinition()->GetParticleName();
+        m_positionOfPrimary          = m_gpsGun->GetParticlePosition();
+        m_momentumDirectionOfPrimary = m_gpsGun->GetParticleMomentumDirection();
+        m_energyOfPrimary            = m_gpsGun->GetParticleEnergy();
+    }
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

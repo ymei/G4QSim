@@ -14,6 +14,7 @@ EventAction::EventAction(AnalysisManager *analysisManager)
 {
     m_eventMessenger = new EventMessenger(this);
     m_analysisManager = analysisManager;
+    m_analysisManager->SetSaveInteval(m_printModulo*10);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

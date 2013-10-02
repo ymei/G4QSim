@@ -30,7 +30,9 @@ public:
     virtual void Step(const G4Step *step);
 
     void SetDataFilename(const G4String &filename) { m_dataFilename = filename; }
-    void SetNbEventsToSimulate(G4int nbEventsToSimulate) { m_nbEventsToSimulate = nbEventsToSimulate; }
+    void SetNbEventsToSimulate(G4int nbEventsToSimulate)
+        { m_nbEventsToSimulate = nbEventsToSimulate; }
+    void SetSaveInteval(G4int val=100000) { m_saveInterval = val; }
 
 private:
 //    G4bool FilterEvent(EventData *pEventData);
@@ -44,6 +46,7 @@ private:
     TFile *m_tfile;
     TTree *m_ttree;
     TParameter<int> *m_nbEventsToSimulateParameter;
+    G4int m_saveInterval;
 
     PrimaryGeneratorAction *m_primaryGeneratorAction;
     EventData *m_eventData;

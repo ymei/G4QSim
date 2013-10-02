@@ -82,7 +82,7 @@ void RunAction::EndOfRunAction(const G4Run* run)
 
     G4int nbEvents = run->GetNumberOfEvent();
     if (nbEvents == 0) return;
- 
+#if 0 
     G4ParticleDefinition* particle = m_primaryGeneratorAction->GetParticleGun()
         ->GetParticleDefinition();
     G4String partName = particle->GetParticleName();
@@ -170,6 +170,7 @@ void RunAction::EndOfRunAction(const G4Run* run)
     // restore default precision
     // 
     G4cout.precision(dfprec);
+#endif
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

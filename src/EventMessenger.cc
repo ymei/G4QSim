@@ -18,8 +18,8 @@ EventMessenger::EventMessenger(EventAction* evAct)
       
     m_printCmd = new G4UIcmdWithAnInteger("/G4QSim/event/printModulo",this);
     m_printCmd->SetGuidance("Print events modulo n");
-    m_printCmd->SetParameterName("EventNb",false);
-    m_printCmd->SetRange("EventNb>0");
+    m_printCmd->SetParameterName("eventNb",false);
+    m_printCmd->SetRange("eventNb>0");
     m_printCmd->AvailableForStates(G4State_Idle);
 
     m_storeTrajectoryCmd = new G4UIcmdWithABool("/G4QSim/event/storeTrajectory",this);
