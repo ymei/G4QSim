@@ -80,8 +80,9 @@ AnalysisManager::BeginOfRun(const G4Run *run)
 void
 AnalysisManager::EndOfRun(const G4Run *run)
 {
-    m_tfile->Write();
-    m_tfile->Close();
+    // in case of automatic file change
+    m_tfile->CurrentFile()->Write();
+    m_tfile->CurrentFile()->Close();
 }
 
 void
