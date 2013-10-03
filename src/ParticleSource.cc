@@ -209,6 +209,12 @@ void ParticleSource::GeneratePrimaryVertex(G4Event *event)
     particle->SetMass(mass);
     particle->SetCharge(charge);
     vertex->SetPrimary(particle);
-
+/*
+    G4cout << "fIonMass: " << m_fIonDef->GetPDGMass() << "boostBeta: " << boostBeta
+           << " dIonMass: " << dIonMass << " charge: " << charge
+           << " dIP3v.mag(): " << dIP3v.mag() << " energy: " << energy << " lv mag: "
+           << std::sqrt(lv.px()*lv.px() + lv.py()*lv.py() + lv.pz()*lv.pz())
+           << G4endl;
+*/
     event->AddPrimaryVertex(vertex);
 }
