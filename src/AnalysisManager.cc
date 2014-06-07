@@ -4,6 +4,7 @@
 #include <G4HCofThisEvent.hh>
 #include "G4TrajectoryContainer.hh"
 #include "G4Trajectory.hh"
+#include "G4SystemOfUnits.hh"
 
 #include <numeric>
 

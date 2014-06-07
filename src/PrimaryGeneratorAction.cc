@@ -5,6 +5,7 @@
 #include "G4ParticleTable.hh"
 #include "G4ParticleDefinition.hh"
 #include "G4Geantino.hh"
+#include "G4SystemOfUnits.hh"
 #include "Randomize.hh"
 
 #include "ParticleSource.hh"

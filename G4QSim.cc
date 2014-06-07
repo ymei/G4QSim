@@ -11,7 +11,6 @@
 #include "G4LogicalVolumeStore.hh"
 #include "G4TransportationManager.hh"
 #include "G4SDManager.hh"
-#include "LHEP_EMV.hh"
 
 #include "AnalysisManager.hh"
 #include "PrimaryGeneratorAction.hh"

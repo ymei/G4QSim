@@ -9,6 +9,7 @@
 #include <G4Ions.hh>
 #include <G4TrackingManager.hh>
 #include <G4Track.hh>
+#include "G4SystemOfUnits.hh"
 #include <Randomize.hh>
 
 #include <G4Geantino.hh>

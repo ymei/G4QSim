@@ -12,6 +12,7 @@
 #include <G4UIcmdWithABool.hh>
 #include <G4Tokenizer.hh>
 #include <G4ios.hh>
+#include <G4SystemOfUnits.hh>
 
 #include "ParticleSource.hh"
 #include "ParticleSourceMessenger.hh"

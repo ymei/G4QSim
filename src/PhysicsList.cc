@@ -5,6 +5,7 @@
 #include "PhysicsListMessenger.hh"
 
 #include "G4UnitsTable.hh"
+#include "G4SystemOfUnits.hh"
 
 #include "G4ParticleDefinition.hh"
 #include "G4ParticleTypes.hh"
