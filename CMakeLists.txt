@@ -30,7 +30,7 @@ if(NOT ROOT_FOUND)
 endif()
 if(NOT GCCXML)
    message(STATUS "GCCXML not found.")
-   return()
+#  return()
 endif()
 
 #----------------------------------------------------------------------------
