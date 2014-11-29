@@ -4,6 +4,7 @@
 #include "G4GeneralParticleSource.hh"
 #include "G4ParticleTable.hh"
 #include "G4ParticleDefinition.hh"
+#include "G4IonTable.hh"
 #include "G4Geantino.hh"
 #include "G4SystemOfUnits.hh"
 #include "Randomize.hh"
@@ -47,7 +48,7 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
         G4double excitEnergy = 0.*keV;
     
         G4ParticleDefinition* ion
-            = G4ParticleTable::GetParticleTable()->GetIon(Z,A,excitEnergy);
+            = G4IonTable::GetIonTable()->GetIon(Z,A,excitEnergy);
         m_gpsGun->SetParticleDefinition(ion);
         m_gpsGun->SetParticleCharge(ionCharge);
     }  
