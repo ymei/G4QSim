@@ -19,7 +19,7 @@ public:
 private:
 
     SDHitsCollection* m_hitsCollection;
-    map<G4int,G4String> m_particleTypes;
+    std::map<G4int,G4String> m_particleTypes;
 };
 
 #endif /* __SENSITIVEDETECTOR_H__ */
