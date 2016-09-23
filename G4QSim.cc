@@ -1,3 +1,8 @@
+/** \file
+ * G4QSim main entry.
+ *
+ * See print_usage() for available arguments.
+ */
 #include <string>
 #include <sstream>
 #include <unistd.h>
@@ -33,20 +38,24 @@
 
 #include "G4GDMLParser.hh"
 
+/** print arguments and exit.
+ */
 void print_usage(void)
 {
     G4cerr << "Usage:" << G4endl;
-    G4cerr << "       -g [geometry description file name, .gdml]"  << G4endl;
-    G4cerr << "       -i [tcsh | qt], interactive with UI type"    << G4endl;
-    G4cerr << "       -m [macro (input) file name]"                << G4endl;
-    G4cerr << "       -n [#] of events to simulate"                << G4endl;
-    G4cerr << "       -o [output (data) file name]"                << G4endl;
-    G4cerr << "       -s [random number seed]"                     << G4endl;
-    G4cerr << "       -u [particleSource, 0:gps, 1:beta-neutrino]" << G4endl;
-    G4cerr << "       -v [vrml | opengl], visual engine selection" << G4endl;
+    G4cerr << "       -g [geometry description file name, .gdml]"       << G4endl;
+    G4cerr << "       -i [tcsh | qt], interactive with UI type"         << G4endl;
+    G4cerr << "       -m [macro (input) file name]"                     << G4endl;
+    G4cerr << "       -n [#] of events to simulate"                     << G4endl;
+    G4cerr << "       -o [output (data) file name]"                     << G4endl;
+    G4cerr << "       -s [random number seed]"                          << G4endl;
+    G4cerr << "       -u [particleSource, 0:gps, 1:(double)BetaDecay]"  << G4endl;
+    G4cerr << "       -v [vrml | opengl], visual engine selection"      << G4endl;
     exit(EXIT_FAILURE);
 }
 
+/** main entry.
+ */
 int
 main(int argc, char **argv)
 {

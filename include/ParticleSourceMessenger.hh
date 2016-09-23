@@ -26,13 +26,13 @@ class ParticleSourceMessenger: public G4UImessenger
 public:
     ParticleSourceMessenger(ParticleSource *particleSource);
     ~ParticleSourceMessenger();
-
+    /// Called by UI to set new values.
     void SetNewValue(G4UIcommand *command, G4String newValues);
  
 private:
     G4ParticleDefinition *ParseIonValues(G4String newValues);
 
-    ParticleSource *m_particleSource;
+    ParticleSource *m_particleSource; ///< ParticleSource passed into this class.
     G4ParticleTable *m_particleTable;
     G4ParticleDefinition *m_ionDef;
     G4double m_ionCharge;
@@ -44,6 +44,7 @@ private:
     G4UIcmdWithAString *m_typeCmd;
     G4UIcmdWithADoubleAndUnit *m_QValueCmd;
     G4UIcmdWithAString *m_EHistCmd;
+    G4UIcmdWithAString *m_dBDEventsCmd;
     G4UIcmdWith3Vector *m_fIonPDirCmd;
     G4UIcmdWith3VectorAndUnit *m_fIonPosCmd;
     G4UIcmdWithADoubleAndUnit *m_fIonEkCmd;
