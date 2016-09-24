@@ -19,7 +19,9 @@ decays seem to work without it.
 
 ################################################################################
 See macro/dbdXe136.mac and geometry/Xe136HPG.gdml for an example to
-generate Xe-136 double-beta decay events.
+generate Xe-136 double-beta decay events:
+
+./G4QSim -g ../geometry/Xe136HPG.gdml -u 1 -m ../macro/dbdXe136.mac
 
 \endverbatim
 */

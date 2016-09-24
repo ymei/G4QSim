@@ -1,0 +1,19 @@
+.comment -- For showing X,Y,Z axes in UCSF Chimera
+.comment -- This file shows X,Y,Z axes as red, yellow, blue arrows --
+.comment -- Edit "translate" and "scale" values to adjust offset and size --
+.translate -36.0 -36.0 -34.0
+.scale 5
+.font Helvetica 12 bold
+.sphere 0 0 0 0.5
+.color 1 0 0
+.arrow 0 0 0 5 0 0
+.cmov 6 0 0
+X
+.color 1 1 0
+.arrow 0 0 0 0 5 0
+.cmov 0 6 0
+Y
+.color 0 0 1
+.arrow 0 0 0 0 0 5
+.cmov 0 0 6
+Z

@@ -1,4 +1,7 @@
-/* This file processes the .root file with simulated trajectory data
+/** \file
+ * Analyze beta-nu correlation simulation output.
+ *
+ * This file processes the .root file with simulated trajectory data
  * and computes the additional information useful for Beta-Neutrino
  * correlation experiments.  Additional information is saved in `t2'.
  *
