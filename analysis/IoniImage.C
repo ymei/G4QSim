@@ -25,6 +25,10 @@
 #include <TUnuranMultiContDist.h>
 #include <TMath.h>
 
+extern "C" {
+#include "mrcIo.h"
+}
+
 #if defined(__MAKECINT__) || defined(__CINT__)
 #pragma link C++ class vector<float>+;
 #pragma link C++ class vector<vector<float> >+;
@@ -33,20 +37,89 @@
 #pragma link C++ class vector<vector<long> >+;
 #endif
 
-extern "C" {
-#include "mrcIo.h"
-}
-
 #ifndef MIN
 #define MIN(a,b) ((a)>(b)?(b):(a))
 #endif
+
+/** Cholesky decomposition.  Adapted from NR3.
+ * @param[in] a input array, must be square, symmetric and positive-definite, with n*n elements.
+ * @param[in] n dimension of array a and L.
+ * @param[out] L decomposition result, a lower triangular matrix.
+ *               If (*L)=NULL is supplied, *L is allocated.
+ * @return 1 when success, 0 if a is not positive-definite.
+ */
+int cholesky_decomp(const double *a, ssize_t n, double **L)
+{
+    ssize_t i, j, k;
+    double sum, *el;
+    if(*L == NULL) {
+        (*L) = (double*)calloc(n*n, sizeof(double));
+        if(*L == NULL) {
+            fprintf(stderr, "%s(): *L allocation failure.\n", __FUNCTION__);
+            return 0;
+        }
+    }
+    el = *L;
+    for(i=0; i<n*n; i++) {el[i] = a[i];}
+    for(i=0; i<n; i++) {
+        for(j=i; j<n; j++) {
+            for(sum=el[i*n+j],k=i-1; k>=0; k--) sum -= el[i*n+k] * el[j*n+k];
+            if(i == j) {
+                if(sum <= 0.0) {
+                    fprintf(stderr, "%s(): a is not positive-definite.\n", __FUNCTION__);
+                    return 0;
+                }
+                el[i*n+i] = sqrt(sum);
+            } else {
+                el[j*n+i] = sum/el[i*n+i];
+            }
+        }
+    }
+    for(i=0; i<n; i++)
+        for(j=0; j<i; j++)
+            el[j*n+i] = 0.0;
+    return 1;
+}
+/** n-dimmensional Gaussian (multivariate normal) distribution.
+ * @param[in] n dimension.
+ * @param[in] L Cholesky decomposed covariance matrix.
+ * @param[in] mean vector of mean values.
+ * @param[out] pt n-dimmensional Gaussian deviate output.  pt has to be pre-allocated.
+ */
+double *rand_gaussnd(TRandom *tr, ssize_t n, const double *L, const double *mean, double *pt)
+{
+#ifndef RAND_GAUSSND_NMAX
+#define RAND_GAUSSND_NMAX 1024
+#endif /* for efficiency */
+    double spt[RAND_GAUSSND_NMAX];
+
+    ssize_t i, j;
+    double u, v, x, y, q;
+    for(i=0; i<n; i++) { /* fill vector spt of independent normal deviates. */
+        do{
+            u = tr->Uniform();
+            v = 1.7156*(tr->Uniform()-0.5);
+            x = u - 0.449871;
+            y = fabs(v) + 0.386595;
+            q = x*x + y*(0.19600*y-0.25472*x);
+        } while (q > 0.27597 && (q > 0.27846 || v*v > -4.*log(u)*u*u));
+        spt[i] = v/u;
+    }
+    for(i=0; i<n; i++) {
+        pt[i] = 0.0;
+        for(j=0; j<=i; j++) pt[i] += L[i*n+j] * spt[j];
+        pt[i] += mean[i];
+    }
+    return pt;
+#undef RAND_GAUSSND_NMAX
+}
 
 typedef std::vector< std::vector<float> > vecvec;
 // for xenon at 10bar
 double Fano=0.14;
 double Wi=24.8; // eV
 double Dt=1.0; // transverse diffusion (sigma) [mm]
-double Dl=1.0; // longitudinal diffusion (sigma) [mm]
+double Dl=2.0; // longitudinal diffusion (sigma) [mm]
 int nbin=400, bmin=-200, bmax=200; // binning
 
 int IoniImage(TTree *t1, const char *ofname, int pProj=0, int omrc=-1)
@@ -65,19 +138,27 @@ int IoniImage(TTree *t1, const char *ofname, int pProj=0, int omrc=-1)
     TH3I *cloudH;
     int nIon;
     double mIon, sIon;
-    double sxyz[3];
-
+    double cov[9] = {Dt*Dt,   0.0,   0.0,
+                       0.0, Dt*Dt,   0.0,
+                       0.0,   0.0, Dl*Dl};
+    double L[9], *Lp, sxyz[3], mean[3]={0.0, 0.0, 0.0};
     TRandom3 *tr = new TRandom3;
+    /*
     TUnuran *tur = new TUnuran(tr);
     TF3 *gs3 = new TF3("gs3", "(2.0*pi*[0]*[1]*[2])**(-3.0/2.0)*exp(-0.5*(x**2/[0]**2+y**2/[1]**2+z**2/[2]**2))",
                        -DBL_MAX,DBL_MAX, -DBL_MAX,DBL_MAX, -DBL_MAX,DBL_MAX);
     gs3->SetParameters(Dt, Dt, Dl);
     TUnuranMultiContDist dist(gs3);
     tur->Init(dist);
+    */
+    Lp = L;
+    cholesky_decomp(cov, 3, &Lp);
+
     cloudH = new TH3I("cloudH", "Charge cloud",
                       nbin, bmin, bmax,
                       nbin, bmin, bmax,
                       nbin, bmin, bmax);
+
     
     t1->SetBranchAddress("parentid", &parentId);
     t1->SetBranchAddress("ed", &ed);
@@ -113,7 +194,8 @@ int IoniImage(TTree *t1, const char *ofname, int pProj=0, int omrc=-1)
             if(nIon == 0) continue;
             //handle diffusion
             for(k=0; k<nIon; k++) {
-                tur->SampleMulti(sxyz);
+                // tur->SampleMulti(sxyz);
+                rand_gaussnd(tr, 3, L, mean, sxyz);
                 cloudH->Fill((*xp)[j] + sxyz[0],
                              (*yp)[j] + sxyz[1],
                              (*zp)[j] + sxyz[2]);
@@ -134,7 +216,7 @@ int IoniImage(TTree *t1, const char *ofname, int pProj=0, int omrc=-1)
         for(i=0; i<nbin; i++) {
             for(j=0; j<nbin; j++) {
                 for(k=0; k<nbin; k++) {
-                    *(mdata + i*nbin*nbin + j*nbin + k)
+                    *(mdata + k*nbin*nbin + j*nbin + i)
                         = cloudH->GetBinContent(cloudH->GetBin(i+1, j+1, k+1));
                 }
             }
@@ -146,8 +228,8 @@ int IoniImage(TTree *t1, const char *ofname, int pProj=0, int omrc=-1)
     }
     
     delete cloudH;
-    delete gs3;
-    delete tur;
+    //delete gs3;
+    //delete tur;
     delete tr;
 
     return i;

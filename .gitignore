@@ -1,0 +1,6 @@
+*.o
+*.pcm
+LinkDef.h
+Vector.h
+VectorDict.cpp
+dox
