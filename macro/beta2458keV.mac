@@ -1,0 +1,32 @@
+/control/verbose 2
+/run/verbose 2
+/tracking/verbose 0
+/tracking/storeTrajectory 0
+#
+# Draw smooth trajectories at end of event, showing trajectory points
+# as markers 2 pixels wide:
+#/vis/scene/add/trajectories smooth
+#/vis/modeling/trajectories/create/drawByCharge
+#/vis/modeling/trajectories/drawByCharge-0/default/setDrawStepPts true
+#/vis/modeling/trajectories/drawByCharge-0/default/setStepPtsSize 2
+#
+# (if you prefer not refreshing each event, uncomment next line)
+#/vis/scene/endOfEventAction accumulate
+
+# set all cuts: gamma, e- and e+
+/G4QSim/phys/setCuts 0.001 mm
+
+/gps/verbose 0
+/gps/particle e-
+#/gps/particle opticalphoton
+#/gps/energy 3.0 eV
+/gps/pos/type Volume
+/gps/pos/shape Sphere
+/gps/pos/centre 0 0 0 mm
+/gps/pos/radius 50 mm
+/gps/ang/type iso
+/gps/ene/type Gauss
+/gps/ene/mono 2458 keV
+/gps/ene/sigma 5 keV
+#
+# /run/beamOn 1

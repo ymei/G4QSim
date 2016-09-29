@@ -115,14 +115,28 @@ double *rand_gaussnd(TRandom *tr, ssize_t n, const double *L, const double *mean
 }
 
 typedef std::vector< std::vector<float> > vecvec;
-// for xenon at 10bar
-double Fano=0.14;
-double Wi=24.8; // eV
-double Dt=1.0; // transverse diffusion (sigma) [mm]
-double Dl=2.0; // longitudinal diffusion (sigma) [mm]
-int nbin=400, bmin=-200, bmax=200; // binning
+typedef struct param 
+{
+    double Fano;    // Fano factor
+    double Wi;      // W-value [eV]
+    double Dt;      // transverse diffusion (sigma) [mm]
+    double Dl;      // longitudinal diffusion (sigma) [mm]
+    int    nbin;    // binning
+    double bmin;
+    double bmax;
+} param_t;
 
-int IoniImage(TTree *t1, const char *ofname, int pProj=0, int omrc=-1)
+param_t param_default = {
+    .Fano = 0.14,   // for xenon at 10bar
+    .Wi   = 24.8,   // eV
+    .Dt   = 1.0,    // transverse diffusion (sigma) [mm]
+    .Dl   = 2.0,    // longitudinal diffusion (sigma) [mm]
+    .nbin = 400,    // binning
+    .bmin = -200.0,
+    .bmax =  200.0
+};
+
+int IoniImage(const param_t *pm, TTree *t1, const char *ofname, ssize_t iStart=0, ssize_t iStop=-1, int omrc=-1)
 {
     ssize_t i, j, k;
 
@@ -138,9 +152,9 @@ int IoniImage(TTree *t1, const char *ofname, int pProj=0, int omrc=-1)
     TH3I *cloudH;
     int nIon;
     double mIon, sIon;
-    double cov[9] = {Dt*Dt,   0.0,   0.0,
-                       0.0, Dt*Dt,   0.0,
-                       0.0,   0.0, Dl*Dl};
+    double cov[9] = {pm->Dt*pm->Dt, 0.0,           0.0,
+                     0.0,           pm->Dt*pm->Dt, 0.0,
+                     0.0,           0.0,           pm->Dl*pm->Dl};
     double L[9], *Lp, sxyz[3], mean[3]={0.0, 0.0, 0.0};
     TRandom3 *tr = new TRandom3;
     /*
@@ -155,10 +169,9 @@ int IoniImage(TTree *t1, const char *ofname, int pProj=0, int omrc=-1)
     cholesky_decomp(cov, 3, &Lp);
 
     cloudH = new TH3I("cloudH", "Charge cloud",
-                      nbin, bmin, bmax,
-                      nbin, bmin, bmax,
-                      nbin, bmin, bmax);
-
+                      pm->nbin, pm->bmin, pm->bmax,
+                      pm->nbin, pm->bmin, pm->bmax,
+                      pm->nbin, pm->bmin, pm->bmax);
     
     t1->SetBranchAddress("parentid", &parentId);
     t1->SetBranchAddress("ed", &ed);
@@ -173,21 +186,26 @@ int IoniImage(TTree *t1, const char *ofname, int pProj=0, int omrc=-1)
         tp1->Branch("nIonTot", &nIonTot, "nIonTot/I");
         tp1->Branch("cloudH", "TH3I", &cloudH);
     } else {
-        mh = mrcIo_fill_header(NULL, nbin, nbin, nbin);
-        mdata = (float*)calloc(nbin*nbin*nbin, sizeof(float));
+        mh = mrcIo_fill_header(NULL, pm->nbin, pm->nbin, pm->nbin);
+        mdata = (float*)calloc(pm->nbin*pm->nbin*pm->nbin, sizeof(float));
     }
 
-    for(i=0; i<t1->GetEntries(); i++) {
+    if(iStart < 0) iStart = 0;
+    if(iStart >= t1->GetEntries()) iStart = t1->GetEntries()-1;
+    if(iStop < 0) iStop = t1->GetEntries();
+    if(iStop > t1->GetEntries()) iStop = t1->GetEntries();
+    for(i=iStart; i<iStop; i++) {
         if(omrc>=0) {
             i = MIN(omrc, t1->GetEntries());
         }
+        printf("\ri = %zd", i); fflush(stdout);
         
         t1->GetEntry(i);
         cloudH->Reset();
         nIonTot = 0;
         for(j=0; j<(ssize_t)ed->size(); j++) {
-            mIon = (*ed)[j] * 1000.0 / Wi;
-            sIon = std::sqrt(Fano * mIon);
+            mIon = (*ed)[j] * 1000.0 / pm->Wi;
+            sIon = std::sqrt(pm->Fano * mIon);
             nIon = (int)tr->Gaus(mIon, sIon);
             if(nIon<0) nIon = 0;
             nIonTot += nIon;
@@ -207,16 +225,17 @@ int IoniImage(TTree *t1, const char *ofname, int pProj=0, int omrc=-1)
             break;
         }
     }
+    printf("\n");
 
     if(omrc<0) {
         tp1->Write();
         tfp->CurrentFile()->Close();
         delete tfp;
     } else {
-        for(i=0; i<nbin; i++) {
-            for(j=0; j<nbin; j++) {
-                for(k=0; k<nbin; k++) {
-                    *(mdata + k*nbin*nbin + j*nbin + i)
+        for(i=0; i<pm->nbin; i++) {
+            for(j=0; j<pm->nbin; j++) {
+                for(k=0; k<pm->nbin; k++) {
+                    *(mdata + k*pm->nbin*pm->nbin + j*pm->nbin + i)
                         = cloudH->GetBinContent(cloudH->GetBin(i+1, j+1, k+1));
                 }
             }
@@ -236,25 +255,83 @@ int IoniImage(TTree *t1, const char *ofname, int pProj=0, int omrc=-1)
 }
 
 #ifndef __CINT__
+
+void print_usage(const param_t *pm)
+{
+    printf("Usage:\n");
+    printf("      -s iStart[0] -e iStop[-1] starting and stopping(+1) eventid\n");
+    printf("      -n nbin[%d] -i bmin[%g] -a bmax[%g] binning[mm]\n",
+           pm->nbin, pm->bmin, pm->bmax);
+    printf("      -w W[%g] w-value[eV]\n", pm->Wi);
+    printf("      -f Fano[%g] Fano factor\n", pm->Fano);
+    printf("      -m omrc[-1] >=0 : output eventid==omrc to an MRC file\n");
+    printf("      -t Dt[%g] -l Dl[%g] Transverse and longitudinal diffusion [mm]\n",
+           pm->Dt, pm->Dl);
+    printf("      input.root\n");
+}
+
 /** Main entry if this file is compiled outside of root */
 int main(int argc, char **argv)
 {
+    int optC = 0;
+    param_t pm;
+    
     char *sRootFname;
     std::string ofname;
     std::stringstream ss;
-    int pProj=0, omrc=-1;
-    ssize_t sz;
+    int omrc=-1;
+    ssize_t iStart=0, iStop=-1, sz;
 
     TFile *tfs;
     TTree *t1s;
+
+    memcpy(&pm, &param_default, sizeof(pm));
+    // parse switches
+    while((optC = getopt(argc, argv, "a:e:f:i:l:m:n:s:t:w:")) != -1)
+    {
+        switch(optC)
+        {
+        case 'a':
+            pm.bmax = atof(optarg);
+            break;
+        case 'e':
+            iStop = atoll(optarg);
+            break;
+        case 'f':
+            pm.Fano = atof(optarg);
+            break;
+        case 'i':
+            pm.bmin = atof(optarg);
+            break;            
+        case 'l':
+            pm.Dl = atof(optarg);
+            break;
+        case 'm':
+            omrc = atoi(optarg);
+            break;
+        case 'n':
+            pm.nbin = atoi(optarg);
+            break;
+        case 's':
+            iStart = atoll(optarg);
+            break;
+        case 't':
+            pm.Dt = atof(optarg);
+            break;
+        case 'w':
+            pm.Wi = atof(optarg);
+            break;
+        default:
+            print_usage(&pm);
+            return EXIT_FAILURE;
+            break;
+        }
+    }
+    argc -= optind;
+    argv += optind;
     
-    if(argc > 1) {
-        sRootFname = argv[1];
-        if(argc > 2) pProj = atoi(argv[2]);
-        if(argc > 3) omrc = atoi(argv[3]);
-        if(argc > 4) Fano = atof(argv[4]);
-        if(argc > 5) Wi = atof(argv[5]);
-        
+    if(argc >= 1) {
+        sRootFname = argv[0];
         ofname.assign(sRootFname);
         sz = ofname.size();
         if(omrc<0) {
@@ -268,12 +345,7 @@ int main(int argc, char **argv)
         }
         std::cout << "Output file: " << ofname << std::endl;
     } else {
-        std::cerr << argv[0] << " SimulatedEdRootFname [pProj] [omrc] [Fano] [Wi]\n"
-                  << "            [pProj] : plane of projection: 0-xy; 1-yz; 2-xz\n"
-                  << "            [omrc]  : output to MRC: (<0)-no output; 0,1,2...-eventId\n"
-                  << "            [Fano]  : Fano factor, default for Xe: 0.14\n"
-                  << "            [Wi]    : W value, default for Xe: 24.8eV"
-                  << std::endl;
+        print_usage(&pm);
         return EXIT_FAILURE;
     }
 
@@ -285,7 +357,7 @@ int main(int argc, char **argv)
     t1s->ls();
     std::cout << "t1 has " << t1s->GetEntries() << " entries." << std::endl;
 
-    IoniImage(t1s, ofname.c_str(), pProj, omrc);
+    IoniImage(&pm, t1s, ofname.c_str(), iStart, iStop, omrc);
 
     tfs->Close();
     delete tfs;

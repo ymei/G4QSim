@@ -51,7 +51,6 @@ void print_usage(void)
     G4cerr << "       -s [random number seed]"                          << G4endl;
     G4cerr << "       -u [particleSource, 0:gps, 1:(double)BetaDecay]"  << G4endl;
     G4cerr << "       -v [vrml | opengl], visual engine selection"      << G4endl;
-    exit(EXIT_FAILURE);
 }
 
 /** main entry.
@@ -125,6 +124,7 @@ main(int argc, char **argv)
 
         default:
             print_usage();
+            exit(EXIT_FAILURE);
             break;
         }
     }
@@ -133,6 +133,7 @@ main(int argc, char **argv)
     if(geometryFilename.empty()) {
         G4cerr << "Geometry File not found!" << G4endl;
         print_usage();
+        exit(EXIT_FAILURE);
     } else {
         gdmlParser.Read(geometryFilename);
     }

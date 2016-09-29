@@ -1,0 +1,31 @@
+/control/verbose 2
+/run/verbose 2
+/tracking/verbose 0
+#/tracking/storeTrajectory 1
+
+/vis/viewer/set/viewpointThetaPhi 80 10 deg
+
+#
+#/gps/particle ion
+#/gps/ion 2 6 0
+#/gps/position 0. 0. 0. cm
+#/gps/energy 0
+#/gps/verbose 0
+#
+#/G4QSim/fullChain true
+#/G4QSim/event/storeTrajectory true
+/G4QSim/event/printModulo 100
+
+# set all cuts: gamma, e- and e+
+/G4QSim/phys/setCuts 0.001 mm
+
+/G4QSim/gun/type doubleBetaDecay
+#Xe136 (father ion)
+/G4QSim/gun/fIon 54 136 0 0.0
+/G4QSim/gun/fIonPDir 1.0 0.0 0.0
+/G4QSim/gun/fIonPos 0.0 0.0 0.0 mm
+/G4QSim/gun/fIonEk 0.0 keV
+/G4QSim/gun/dBDEvents ../macro/Xe136_2nubb_n100000.dat
+
+#/run/beamOn 100000
+

@@ -25,7 +25,7 @@
 /G4QSim/gun/fIonPDir 1.0 0.0 0.0
 /G4QSim/gun/fIonPos 0.0 0.0 0.0 mm
 /G4QSim/gun/fIonEk 0.0 keV
-/G4QSim/gun/dBDEvents ../macro/Xe136_0nubb_n1000.dat
+/G4QSim/gun/dBDEvents ../macro/Xe136_0nubb_n100000.dat
 
-/run/beamOn 1000
+#/run/beamOn 100000
 
