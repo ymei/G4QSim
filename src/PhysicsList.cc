@@ -1,8 +1,4 @@
 #include "globals.hh"
-#include "G4VModularPhysicsList.hh"
-
-#include "PhysicsList.hh"
-#include "PhysicsListMessenger.hh"
 
 #include "G4UnitsTable.hh"
 #include "G4SystemOfUnits.hh"
@@ -10,6 +6,7 @@
 #include "G4ParticleDefinition.hh"
 #include "G4ParticleTypes.hh"
 #include "G4ParticleTable.hh"
+#include "G4IonTable.hh"
 
 #include "G4ProcessManager.hh"
 #include "G4Cerenkov.hh"
@@ -24,13 +21,18 @@
 #include "G4EmPenelopePhysics.hh"
 #include "G4EmLivermorePhysics.hh"
 
+#include "G4VModularPhysicsList.hh"
+
+#include "PhysicsList.hh"
+#include "PhysicsListMessenger.hh"
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 PhysicsList::PhysicsList()
     : G4VUserPhysicsList()
 {
     //add new units for radioActive decays
-    // 
+    //
     const G4double minute = 60*second;
     const G4double hour   = 60*minute;
     const G4double day    = 24*hour;
@@ -46,6 +48,7 @@ PhysicsList::PhysicsList()
     m_theRayleighScatteringProcess = NULL;
     m_theMieHGScatteringProcess    = NULL;
     m_theBoundaryProcess           = NULL;
+    m_theParticleIterator          = theParticleTable->GetIterator();
 
     m_currentDefaultCut = 1.0*mm;
     m_cutForGamma = m_currentDefaultCut;
@@ -55,7 +58,7 @@ PhysicsList::PhysicsList()
     m_physicsListMessenger = new PhysicsListMessenger(this);
     m_emName = G4String("EmPenelope");
     m_emPhysicsList = new G4EmPenelopePhysics();
-    
+
     SetVerboseLevel(0);
 }
 
@@ -188,9 +191,9 @@ void PhysicsList::ConstructGeneral()
     // Add Decay Process
     G4Decay* m_theDecayProcess = new G4Decay();
 
-    theParticleIterator->reset();
-    while( (*theParticleIterator)() ){
-        G4ParticleDefinition* particle = theParticleIterator->value();
+    m_theParticleIterator->reset();
+    while( (*m_theParticleIterator)() ){
+        G4ParticleDefinition* particle = m_theParticleIterator->value();
         G4ProcessManager* pmanager = particle->GetProcessManager();
         if (m_theDecayProcess->IsApplicable(*particle)) {
             pmanager ->AddProcess(m_theDecayProcess);
@@ -208,16 +211,16 @@ void PhysicsList::ConstructGeneral()
 
     const G4IonTable *m_theIonTable =
         G4ParticleTable::GetParticleTable()->GetIonTable();
-    for (G4int i=0; i<m_theIonTable->Entries(); i++) 
+    for (G4int i=0; i<m_theIonTable->Entries(); i++)
     {
         G4String particleName = m_theIonTable->GetParticle(i)->GetParticleName();
         G4String particleType = m_theIonTable->GetParticle(i)->GetParticleType();
 
         G4cout << __FUNCTION__ << "i=" << i << " " << particleName << G4endl;
-      
-        if (particleName == "GenericIon") 
+
+        if (particleName == "GenericIon")
         {
-            G4ProcessManager* pmanager = 
+            G4ProcessManager* pmanager =
                 m_theIonTable->GetParticle(i)->GetProcessManager();
             pmanager->SetVerboseLevel(0);
             pmanager->AddProcess(m_theRadioactiveDecay);
@@ -226,8 +229,8 @@ void PhysicsList::ConstructGeneral()
         }
     }
 
-//    G4ProcessManager* pmanager = G4GenericIon::GenericIon()->GetProcessManager();  
-//    pmanager->AddProcess(m_theRadioactiveDecay, 0, -1, 1);    
+//    G4ProcessManager* pmanager = G4GenericIon::GenericIon()->GetProcessManager();
+//    pmanager->AddProcess(m_theRadioactiveDecay, 0, -1, 1);
 
 }
 
@@ -264,9 +267,9 @@ void PhysicsList::ConstructGeneral()
 
 void PhysicsList::ConstructEM()
 {
-    theParticleIterator->reset();
-    while( (*theParticleIterator)() ){
-        G4ParticleDefinition* particle = theParticleIterator->value();
+    m_theParticleIterator->reset();
+    while( (*m_theParticleIterator)() ){
+        G4ParticleDefinition* particle = m_theParticleIterator->value();
         G4ProcessManager* pmanager = particle->GetProcessManager();
         G4String particleName = particle->GetParticleName();
 
@@ -306,7 +309,7 @@ void PhysicsList::ConstructEM()
             G4eIonisation *m_theIonisation = new G4eIonisation();
             m_theIonisation->SetEmModel(new G4PenelopeIonisationModel());
             pmanager->AddProcess(m_theIonisation, -1, 2, 2);
-            
+
             G4eBremsstrahlung *m_theBremsstrahlung = new G4eBremsstrahlung();
             m_theBremsstrahlung->SetEmModel(new G4PenelopeBremsstrahlungModel());
             pmanager->AddProcess(m_theBremsstrahlung, -1, -3, 3);
@@ -323,7 +326,7 @@ void PhysicsList::ConstructEM()
             G4eIonisation *m_theIonisation = new G4eIonisation();
             m_theIonisation->SetEmModel(new G4PenelopeIonisationModel());
             pmanager->AddProcess(m_theIonisation, -1, 2, 2);
-            
+
             G4eBremsstrahlung *m_theBremsstrahlung = new G4eBremsstrahlung();
             m_theBremsstrahlung->SetEmModel(new G4PenelopeBremsstrahlungModel());
             pmanager->AddProcess(m_theBremsstrahlung, -1, -3, 3);
@@ -340,7 +343,7 @@ void PhysicsList::ConstructEM()
             pmanager->AddProcess(new G4MuIonisation(),      -1, 2, 2);
             pmanager->AddProcess(new G4MuBremsstrahlung(),  -1, 3, 3);
             pmanager->AddProcess(new G4MuPairProduction(),  -1, 4, 4);
-            
+
         } else {
             if ((particle->GetPDGCharge() != 0.0) &&
                 (particle->GetParticleName() != "chargedgeantino")) {
@@ -368,11 +371,11 @@ void PhysicsList::ConstructOp()
 //  m_theRayleighScatteringProcess->DumpPhysicsTable();
 
     SetVerbose(0);
-  
+
     m_theCerenkovProcess->SetMaxNumPhotonsPerStep(1000);
     m_theCerenkovProcess->SetMaxBetaChangePerStep(10.0);
     m_theCerenkovProcess->SetTrackSecondariesFirst(true);
-  
+
     m_theScintillationProcess->SetScintillationYieldFactor(1.);
     m_theScintillationProcess->SetTrackSecondariesFirst(true);
 
@@ -385,9 +388,9 @@ void PhysicsList::ConstructOp()
     // G4OpticalSurfaceModel themodel = unified;
     // theBoundaryProcess->SetModel(themodel);
 
-    theParticleIterator->reset();
-    while( (*theParticleIterator)() ){
-        G4ParticleDefinition* particle = theParticleIterator->value();
+    m_theParticleIterator->reset();
+    while( (*m_theParticleIterator)() ){
+        G4ParticleDefinition* particle = m_theParticleIterator->value();
         G4ProcessManager* pmanager = particle->GetProcessManager();
         G4String particleName = particle->GetParticleName();
         if (m_theCerenkovProcess->IsApplicable(*particle)) {
@@ -420,13 +423,13 @@ void PhysicsList::SetVerbose(G4int verbose)
     m_theAbsorptionProcess->SetVerboseLevel(verbose);
     m_theRayleighScatteringProcess->SetVerboseLevel(verbose);
     m_theMieHGScatteringProcess->SetVerboseLevel(verbose);
-    m_theBoundaryProcess->SetVerboseLevel(verbose);  
+    m_theBoundaryProcess->SetVerboseLevel(verbose);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void PhysicsList::SetNbOfPhotonsCerenkov(G4int MaxNumber)
-{  
+{
     m_theCerenkovProcess->SetMaxNumPhotonsPerStep(MaxNumber);
 }
 
@@ -437,8 +440,8 @@ void PhysicsList::SetCuts()
     // fixe lower limit for cut
     G4ProductionCutsTable::GetProductionCutsTable()->SetEnergyRange(100*eV, 1*GeV);
 
-    // "G4VUserPhysicsList::SetCutsWithDefault" method sets 
-    // the default cut value for all particle types 
+    // "G4VUserPhysicsList::SetCutsWithDefault" method sets
+    // the default cut value for all particle types
     // SetCutsWithDefault();
 
     // set cut values for gamma at first and for e- second and next for e+,

@@ -25,7 +25,7 @@ public:
 public:
     // Construct particle and physics
     void ConstructParticle();
-    void ConstructProcess(); 
+    void ConstructProcess();
 
     void SetCuts();
 
@@ -38,8 +38,8 @@ public:
     void ConstructGeneral();
     void ConstructEM();
     void ConstructOp();
-    
-    //for the Messenger 
+
+    //for the Messenger
     void SetVerbose(G4int);
     void SetNbOfPhotonsCerenkov(G4int);
     void AddPhysicsList(const G4String &name);
@@ -54,6 +54,7 @@ private:
     G4OpRayleigh*        m_theRayleighScatteringProcess;
     G4OpMieHG*           m_theMieHGScatteringProcess;
     G4OpBoundaryProcess* m_theBoundaryProcess;
+    G4ParticleTable::G4PTblDicIterator* m_theParticleIterator;
 
     G4double m_cutForGamma;
     G4double m_cutForElectron;
