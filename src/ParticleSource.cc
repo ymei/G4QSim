@@ -25,7 +25,7 @@ ParticleSource::ParticleSource()
 {
     m_sourceMessenger = new ParticleSourceMessenger(this);
 
-    m_gunType = "";
+    m_gunType = "betaDecay";
     m_beNu_a = -1.0/3.0;
     m_QValue = 0.0;
     m_fIonPos = G4ThreeVector(0.0,0.0,0.0);
@@ -64,12 +64,12 @@ int ParticleSource::LoadEHist(G4String EHistFName)
         G4cout << EHistFName << " has been loaded already." << G4endl;
         return 2;
     }
-    
+
     if((fp=fopen(EHistFName.data(), "r")) == NULL) {
         perror(EHistFName.data());
         return 0;
     }
-    
+
     m_EHistN = 0;
     while(fgets(buf, sizeof(buf), fp) && (!feof(fp))) {
         if(buf[0]=='#') continue;
@@ -173,7 +173,7 @@ static inline G4double rand_ld(G4double a)
 static G4double solve_p_nu(G4double pe, G4double Q, G4double me, G4double cosTh, G4double md)
 {
     G4double tmp, sol;
-    
+
     tmp = 2.0*md + 2.0*cosTh*pe;
     sol = 1.0/2.0*(-2.0*md-2.0*cosTh*pe
                    + std::sqrt(tmp*tmp-4.0*(-2.0*md*me + pe*pe
@@ -320,7 +320,7 @@ void ParticleSource::GeneratePrimaryVertex(G4Event *event)
                                         << " " << m_dBDb[1][m_dBDi].z()
                <<  G4endl;
 */
-        
+
         event->AddPrimaryVertex(vertex);
         m_dBDi++;
     } else {

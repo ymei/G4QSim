@@ -46,12 +46,12 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
         G4int Z = 10, A = 24;
         G4double ionCharge   = 0.*eplus;
         G4double excitEnergy = 0.*keV;
-    
+
         G4ParticleDefinition* ion
             = G4IonTable::GetIonTable()->GetIon(Z,A,excitEnergy);
         m_gpsGun->SetParticleDefinition(ion);
         m_gpsGun->SetParticleCharge(ionCharge);
-    }  
+    }
 
     //create vertex
     if(m_particleSourceType) {
