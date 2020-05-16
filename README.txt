@@ -23,5 +23,15 @@ generate Xe-136 double-beta decay events:
 
 ./G4QSim -g ../geometry/Xe136HPG.gdml -u 1 -m ../macro/dbdXe136.mac
 
+################################################################################
+See macro/lens.mac and geometry/lens.gdml for an example to
+propagate optical photons through a MgF2 lens:
+
+./G4QSim -g ../geometry/lens.gdml -u 0 -m ../macro/lens.mac -n 100000
+
+To visualize the geometry:
+
+./G4QSim -g ../geometry/lens.gdml -u 0 -m ../macro/lens.mac -i qt -v opengl
+
 \endverbatim
 */

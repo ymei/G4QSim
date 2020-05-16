@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<gdml xmlns:gdml="http://cern.ch/2001/Schemas/GDML" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://service-spi.web.cern.ch/service-spi/app/releases/GDML/schema/gdml.xsd" >
+
+  <define>
+    <constant name="lensRcurve" value="18.9" />
+    <constant name="lensThickness" value="6.9" />
+    <constant name="lensRadius" value="10.0" />
+    <position name="posDet" unit="mm" x="40" y="0" z="0" />
+    <position name="posLensTubeIntersect" unit="mm" x="lensRcurve" y="0" z="0" />
+    <rotation name="rotLensTubeIntersect" y="90" unit="deg"/>
+    <position name="posLens" unit="mm" x="-12.0" y="0" z="0" />
+    <matrix name="prop1" coldim="2" values="1.0 7.0
+                                            2.0 9.4"/>
+    <matrix name="rindexGas" coldim="2" values="0.160*eV 1.0
+                                                1.000*eV 1.0
+                                                9.000*eV 1.0" />
+    <!-- Refractive index data from https://refractiveindex.info/?shelf=main&book=MgF2
+&page=Li-o -->
+    <matrix name="rindexMgF2"  coldim="2" values=
+            "0.16531224991079*eV 1.292926724049
+             0.17203300601234*eV 1.2998397246206
+             0.17901268760193*eV 1.3060872953615
+             0.18627432006174*eV 1.3117542557778
+             0.19384644689352*eV 1.3169136052771
+             0.20173151225691*eV 1.3216101561257
+             0.20992920323924*eV 1.3258841270052
+             0.21843584819080*eV 1.3297717333128
+             0.22732707633498*eV 1.3333369973548
+             0.23652076961674*eV 1.336575206365
+             0.24614688789577*eV 1.3395561345565
+             0.25616567651466*eV 1.3422850449458
+             0.26657533311782*eV 1.3447811623278
+             0.27736954683020*eV 1.3470621826524
+             0.28867098354621*eV 1.3491679353
+             0.30034929126235*eV 1.3510878843804
+             0.31253891462843*eV 1.3528576211273
+             0.32524708140897*eV 1.3544874066516
+             0.33847717016953*eV 1.3559868412498
+             0.35222780520766*eV 1.3573649116575
+             0.36649183397309*eV 1.3586300322509
+             0.38137246211350*eV 1.3597987513913
+             0.39687640023399*eV 1.3608773967154
+             0.41300528791838*eV 1.361871939257
+             0.42975454916152*eV 1.3627880115892
+             0.44727340343831*eV 1.3636383011659
+             0.46540610898310*eV 1.3644198745422
+             0.48431323216054*eV 1.365144321667
+             0.50400076192316*eV 1.365815369073
+             0.52446779794035*eV 1.3664365577474
+             0.54570505032174*eV 1.3670112471305
+             0.56795321774209*eV 1.3675485551068
+             0.59096371512440*eV 1.3680451752931
+             0.61500092972767*eV 1.3685095581886
+             0.64008356960815*eV 1.3689439282317
+             0.66586566827658*eV 1.369345141989
+             0.69303626290161*eV 1.3697259298747
+             0.72125763486387*eV 1.3700828221577
+             0.75050960915919*eV 1.3704176722998
+             0.78075684781548*eV 1.3707322289362
+             0.81247829248427*eV 1.371032951845
+             0.84573115575102*eV 1.3713212472455
+             0.87994455239957*eV 1.3715937360132
+             0.91568823805834*eV 1.3718565585498
+             0.95299144837125*eV 1.3721110084972
+             0.99187349946479*eV 1.3723583505958
+             1.03148242456821*eV 1.3725948360375
+             1.07345616825194*eV 1.3728314705973
+             1.11697466155945*eV 1.3730644847953
+             1.16307868136116*eV 1.3733003775052
+             1.20960182861560*eV 1.3735293904949
+             1.25910619917842*eV 1.3737654004629
+             1.31019959244531*eV 1.3740027736186
+             1.36351245389969*eV 1.3742456741901
+             1.41874570812564*eV 1.374493954794
+             1.47652956333333*eV 1.3747516942111
+             1.53635919991449*eV 1.375017930162
+             1.59876450590715*eV 1.3752963735019
+             1.66377063114733*eV 1.3755885619824
+             1.73138091653539*eV 1.3758960146491
+             1.80157203477331*eV 1.3762201986406
+             1.87485539744593*eV 1.3765651830829
+             1.95097069131549*eV 1.3769315731974
+             2.03019792751104*eV 1.3773226516459
+             2.11252662179416*eV 1.3777404531746
+             2.19830119562233*eV 1.3781890013187
+             2.28753113345202*eV 1.3786708373441
+             2.38064876023616*eV 1.3791910597935
+             2.47720654211987*eV 1.3797500960693
+             2.57816983641297*eV 1.3803568185783
+             2.68247917423409*eV 1.3810083139712
+             2.79180786834270*eV 1.3817189546679
+             2.90497158934160*eV 1.3824854166927
+             3.02326718929772*eV 1.383321235556
+             3.14600830837603*eV 1.3842269347497
+             3.27307780974392*eV 1.3852070367528
+             3.40615899541482*eV 1.3862811597667
+             3.54443074422812*eV 1.387450339017
+             3.68890768917285*eV 1.3887316265201
+             3.83851973477088*eV 1.3901247165062
+             3.99433593534470*eV 1.3916496138095
+             4.15635894847803*eV 1.3933181557712
+             4.32603584902650*eV 1.3951594695563
+             4.50033348214518*eV 1.3971549326199
+             4.68395116860973*eV 1.399375891974
+             4.87359227331366*eV 1.4018034013023
+             5.07300275912846*eV 1.4045095934272
+             5.27816889881224*eV 1.4074668167692
+             5.49331800766946*eV 1.4107669160898
+             5.71619121406637*eV 1.4144133189838
+             5.94648380974099*eV 1.4184405980642
+             6.18992448492759*eV 1.4230049329721
+             6.44073700951167*eV 1.4280630605708
+             6.70184796935674*eV 1.4337444660296
+             6.97323888825082*eV 1.4401397867621
+             7.25902736727750*eV 1.4474684684638
+             7.55080313234468*eV 1.4556478095315
+             7.85704609842203*eV 1.4650807430246
+             8.17837647975591*eV 1.4760348184102
+             8.50955301531226*eV 1.4886211076878
+             8.85601338807855*eV 1.503424322613" />
+    <variable name="i" value="0"/>
+  </define>
+
+  <materials>
+    <element Z="7" formula="N" name="Nitrogen" >
+      <atom value="14.01" />
+    </element>
+    <element Z="8" formula="O" name="Oxygen" >
+      <atom value="16" />
+    </element>
+    <element Z="9" formula="F" name="Fluorine" >
+      <atom value="18.998403" />
+    </element>
+    <element Z="12" formula="Mg" name="Magnesium" >
+      <atom value="24.305" />
+    </element>
+
+    <material formula="air" name="Air" >
+      <D unit="g/cm3" value="0.05129" />
+      <fraction n="0.7" ref="Nitrogen" />
+      <fraction n="0.3" ref="Oxygen" />
+      <property name="RINDEX" ref="rindexGas"/>
+      <property name="myproperty1" ref="prop1"/>
+    </material>
+
+    <material formula="MgF2" name="MgF2" >
+      <D unit="g/cm3" value="3.148" />
+      <composite n="1" ref="Magnesium" />
+      <composite n="2" ref="Fluorine" />
+      <property name="RINDEX" ref="rindexMgF2"/>
+    </material>
+  </materials>
+
+  <solids>
+    <box name="sWorld" aunit="radian" lunit="mm" x="2000" y="2000" z="2000" />
+    <box name="sDet" aunit="radian" lunit="mm" x="1e-6" y="2000" z="2000" />
+    <orb name="sLensSphere" aunit="radian" lunit="mm" r="lensRcurve" />
+    <tube name="sLensTube" aunit="radian" lunit="mm" rmax="lensRadius" z="lensThickness*2.0" deltaphi="2.0*pi" />
+    <intersection name="sLens">
+      <first ref="sLensSphere" />
+      <second ref="sLensTube" />
+      <positionref ref="posLensTubeIntersect" />
+      <rotationref ref="rotLensTubeIntersect" />
+    </intersection>
+    <opticalsurface name="oSurfLensGas" model="glisur" finish="polished" type="dielectric_dielectric" value="1.0"/>
+  </solids>
+
+  <structure>
+    <volume name="lLens" >
+      <materialref ref="MgF2" />
+      <solidref ref="sLens" />
+    </volume>
+    <volume name="lDet" >
+      <materialref ref="Air" />
+      <solidref ref="sDet" />
+      <auxiliary auxtype="SensDet" auxvalue="Tracker" />
+    </volume>
+    <volume name="World" >
+      <materialref ref="Air" />
+      <solidref ref="sWorld" />
+      <physvol name="pLens">
+        <volumeref ref="lLens" />
+        <positionref ref="posLens" />
+      </physvol>
+      <loop for="i" from="0" to="20" step="1">
+        <physvol name="pDet">
+          <volumeref ref="lDet" />
+          <!-- positionref ref="posDet" /-->
+          <position name="posDetl" unit="mm" x="40.0+i" y="0.0" z="0.0"/>
+        </physvol>
+      </loop>
+    </volume>
+
+    <skinsurface name="sSurfLens" surfaceproperty="oSurfLensGas" >
+      <volumeref ref="lLens" />
+    </skinsurface>
+
+  </structure>
+
+  <setup name="Default" version="1.0" >
+    <world ref="World" />
+  </setup>
+
+</gdml>

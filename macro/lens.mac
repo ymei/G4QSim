@@ -1,0 +1,90 @@
+/control/verbose 2
+/run/verbose 2
+/tracking/verbose 0
+#/tracking/storeTrajectory 1
+#
+# Draw smooth trajectories at end of event, showing trajectory points
+# as markers 2 pixels wide:
+#/vis/scene/add/trajectories smooth
+#/vis/modeling/trajectories/create/drawByCharge
+#/vis/modeling/trajectories/drawByCharge-0/default/setDrawStepPts true
+#/vis/modeling/trajectories/drawByCharge-0/default/setStepPtsSize 2
+#
+# (if you prefer not refreshing each event, uncomment next line)
+#/vis/scene/endOfEventAction accumulate
+
+/gps/verbose 0
+/gps/source/intensity 1
+/gps/particle opticalphoton
+/gps/energy 7.0929 eV
+/gps/position -1000.0 200.0 0.0 mm
+#/gps/direction 1.0 0.0 0.0
+/gps/ang/type iso
+## < limit the range of angles.  Use rot to adjust z direction
+/gps/ang/rot1 0.0 0.0 1.0
+/gps/ang/rot2 2.0 10.0 0.0
+/gps/ang/maxtheta 0.011 rad
+## >
+## < From NIMA v795 pg293-297, 2015
+/gps/ene/type Gauss
+/gps/ene/mono 7.0929 eV
+/gps/ene/sigma 0.1757 eV
+## >
+## < uniform beam, parallel to optical axis (x-axis)
+# /gps/pos/type Plane
+# /gps/pos/shape Circle
+# /gps/pos/centre -20.0 0.0 0.0 mm
+# /gps/pos/radius 11.0 mm
+# /gps/pos/rot1 0.0 0.0 1.0
+# /gps/pos/rot2 0.0 1.0 0.0
+# /gps/direction 1.0 0.0 0.0
+## >
+## < Add more sources
+/gps/source/add 1.0
+/gps/particle opticalphoton
+/gps/energy 7.0929 eV
+/gps/position -1000.0 150.0 0.0 mm
+/gps/ang/type iso
+/gps/ang/rot1 0.0 0.0 1.0
+/gps/ang/rot2 1.5 10.0 0.0
+/gps/ang/maxtheta 0.011 rad
+/gps/ene/type Gauss
+/gps/ene/mono 7.0929 eV
+/gps/ene/sigma 0.1757 eV
+/gps/source/add 1.0
+/gps/particle opticalphoton
+/gps/energy 7.0929 eV
+/gps/position -1000.0 100.0 0.0 mm
+/gps/ang/type iso
+/gps/ang/rot1 0.0 0.0 1.0
+/gps/ang/rot2 1.0 10.0 0.0
+/gps/ang/maxtheta 0.011 rad
+/gps/ene/type Gauss
+/gps/ene/mono 7.0929 eV
+/gps/ene/sigma 0.1757 eV
+/gps/source/add 1.0
+/gps/particle opticalphoton
+/gps/energy 7.0929 eV
+/gps/position -1000.0 50.0 0.0 mm
+/gps/ang/type iso
+/gps/ang/rot1 0.0 0.0 1.0
+/gps/ang/rot2 0.5 10.0 0.0
+/gps/ang/maxtheta 0.011 rad
+/gps/ene/type Gauss
+/gps/ene/mono 7.0929 eV
+/gps/ene/sigma 0.1757 eV
+/gps/source/add 1.0
+/gps/particle opticalphoton
+/gps/energy 7.0929 eV
+/gps/position -1000.0 0.0 0.0 mm
+/gps/ang/type iso
+/gps/ang/rot1 0.0 0.0 1.0
+/gps/ang/rot2 0.0 1.0 0.0
+/gps/ang/maxtheta 0.011 rad
+/gps/ene/type Gauss
+/gps/ene/mono 7.0929 eV
+/gps/ene/sigma 0.1757 eV
+
+/gps/source/multiplevertex true
+## >
+# /run/beamOn 1
