@@ -28,6 +28,15 @@
 #include "TrackingAction.hh"
 #include "SteppingVerbose.hh"
 
+/* These switches seem to be defined by Geant4 in earlier versions,
+   but not in geant4-10-06-patch-01.  Keep them here. */
+#ifndef G4VIS_USE
+#define G4VIS_USE
+#endif
+#ifndef G4UI_USE
+#define G4UI_USE
+#endif
+
 #ifdef G4VIS_USE
 #include "G4VisExecutive.hh"
 #endif
@@ -63,7 +72,7 @@ main(int argc, char **argv)
 
     std::stringstream optStrStream;
     G4String geometryFilename, macroFilename, dataFilename, uiTypeName, cmdString;
-    
+
     G4bool interactiveQ = false;
     G4bool visualizeQ = false;
     G4bool vrmlVisualizeQ = false;
@@ -82,7 +91,7 @@ main(int argc, char **argv)
         case 'g':
             geometryFilename = optarg;
             break;
-            
+
         case 'i':
             interactiveQ = true;
             uiTypeName = optarg;
@@ -112,9 +121,11 @@ main(int argc, char **argv)
             optStrStream.str(optarg);
             optStrStream.clear();
             optStrStream >> particleSourceType;
+            break;
 
         case 'v':
             visualizeQ = true;
+            openGLVisualizeQ = true; // OGL as default.
             optStrStream.str(optarg);
             if(optStrStream.str() == "vrml")
                 vrmlVisualizeQ = true;
@@ -145,7 +156,7 @@ main(int argc, char **argv)
 
     // my Verbose output class
     G4VSteppingVerbose::SetInstance(new SteppingVerbose);
-    
+
     // create the run manager
     G4RunManager *runManager = new G4RunManager;
 
@@ -179,13 +190,15 @@ main(int argc, char **argv)
     if(nbEventsToSimulate) {
         analysisManager->SetNbEventsToSimulate(nbEventsToSimulate);
     }
- 
+
 #ifdef G4VIS_USE
     G4VisManager* visManager = new G4VisExecutive;
     visManager->Initialize();
 #endif
 
+#ifdef G4UI_USE
     G4UIExecutive* uiExec = NULL;
+#endif
     if(interactiveQ) {
 #ifdef G4UI_USE
         if(!uiTypeName.empty())
@@ -217,10 +230,10 @@ main(int argc, char **argv)
         uiManager->ApplyCommand("/vis/scene/add/trajectories smooth");
         uiManager->ApplyCommand("/vis/scene/add/hits");
         uiManager->ApplyCommand("/vis/scene/endOfEventAction accumulate");
-        
+
         uiManager->ApplyCommand("/vis/viewer/set/autoRefresh true");
         uiManager->ApplyCommand("/vis/verbose warnings");
-        
+
         uiManager->ApplyCommand("/tracking/verbose 2");
         uiManager->ApplyCommand("/tracking/storeTrajectory 1");
 

@@ -1,3 +1,9 @@
+#include <numeric>
+#include <TROOT.h>
+#include <TFile.h>
+#include <TTree.h>
+#include <TParameter.h>
+
 #include <G4SDManager.hh>
 #include <G4Run.hh>
 #include <G4Event.hh>
@@ -5,13 +11,6 @@
 #include "G4TrajectoryContainer.hh"
 #include "G4Trajectory.hh"
 #include "G4SystemOfUnits.hh"
-
-#include <numeric>
-
-#include <TROOT.h>
-#include <TFile.h>
-#include <TTree.h>
-#include <TParameter.h>
 
 #include "DetectorConstruction.hh"
 #include "SDHit.hh"
@@ -94,7 +93,7 @@ AnalysisManager::BeginOfEvent(const G4Event *event)
         G4SDManager *sdManager = G4SDManager::GetSDMpointer();
         // ``Tracker_HC'' as defined in `DetectorConstruction.cc'
         m_hitsCollectionID = sdManager->GetCollectionID("Tracker_HC");
-    } 
+    }
 }
 
 void

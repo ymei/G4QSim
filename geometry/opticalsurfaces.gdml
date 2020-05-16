@@ -3,12 +3,12 @@
 
  <define>
   <position name="detinWorldp" unit="mm" x="0" y="0" z="0" />
-  <position name="pos2" unit="mm" x="2000" y="0" z="0" /> 
+  <position name="pos2" unit="mm" x="2000" y="0" z="0" />
 
-  <matrix name="prop1" coldim="2" values="1.0 7.0 
+  <matrix name="prop1" coldim="2" values="1.0 7.0
                                           2.0 9.4"/>
 
-  <matrix name="prop2" coldim="2" values="3.0 -1.0 
+  <matrix name="prop2" coldim="2" values="3.0 -1.0
                                           4.0 -9.4
                                           5.0 -11.1"/>
 
@@ -28,7 +28,7 @@
   <material formula=" " name="Air" >
    <property name="myproperty1" ref="prop1"/>
    <property name="myproperty2" ref="prop2"/>
-   <property name="RINDEX" ref="RINDEX"/>  
+   <property name="RINDEX" ref="RINDEX"/>
    <D unit="g/cm3" value="0.05129" />
    <fraction n="0.7" ref="Nitrogen" />
    <fraction n="0.3" ref="Oxygen" />
@@ -61,12 +61,12 @@
 
   <skinsurface name="skinsrf1" surfaceproperty="surf1" >
     <volumeref ref="Detector"/>
-  </skinsurface> 
+  </skinsurface>
 
   <bordersurface name="bordersrf1" surfaceproperty="surf1" >
     <physvolref ref="pv1"/>
     <physvolref ref="pv2"/>
-  </bordersurface> 
+  </bordersurface>
 
  </structure>
 

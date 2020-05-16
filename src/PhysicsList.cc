@@ -182,7 +182,7 @@ void PhysicsList::AddPhysicsList(const G4String &name)
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 #include "G4Decay.hh"
-#include "G4RadioactiveDecay.hh"
+#include "G4RadioactiveDecayBase.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -204,8 +204,7 @@ void PhysicsList::ConstructGeneral()
     }
 
     // Add radioactive decay
-    G4RadioactiveDecay* m_theRadioactiveDecay = new G4RadioactiveDecay();
-    m_theRadioactiveDecay->SetHLThreshold(-1.*s);
+    G4RadioactiveDecayBase* m_theRadioactiveDecay = new G4RadioactiveDecayBase();
     m_theRadioactiveDecay->SetICM(true);
     m_theRadioactiveDecay->SetARM(false);
 

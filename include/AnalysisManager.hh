@@ -1,9 +1,9 @@
 #ifndef __ANALYSISMANAGER_H__
 #define __ANALYSISMANAGER_H__
 
-#include <globals.hh>
-
 #include <TParameter.h>
+
+#include <globals.hh>
 
 class G4Run;
 class G4Event;
