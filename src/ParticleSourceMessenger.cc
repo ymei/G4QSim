@@ -191,12 +191,12 @@ G4ParticleDefinition *ParticleSourceMessenger::ParseIonValues(G4String newValues
     atomicMass = StoI(next());
     G4String sQ = next();
 
-    if(sQ.isNull()) {
+    if(sQ.empty()) {
         ionCharge = atomicNumber;
     } else {
         ionCharge = StoI(sQ);
         sQ = next();
-        if(sQ.isNull()) {
+        if(sQ.empty()) {
             ionExciteEnergy = 0.0;
         } else {
             ionExciteEnergy = StoD(sQ) * keV;
